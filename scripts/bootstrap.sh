@@ -16,6 +16,9 @@ readonly -a STOW_PACKAGES_NORMAL=( zsh git vscode cursor )
 # This keeps ~/.ssh a real directory so private keys remain outside the repo.
 readonly -a STOW_PACKAGES_NOFOLD=( ssh )
 
+# Casks to install into /Applications
+readonly -a CASKS=( telegram vlc whatsapp cursor visual-studio-code spotify raycast cloudflare-warp ghostty intellij-idea-ce the-unarchiver transmission netnewswire chatgpt docker-desktop )
+
 function has() { command -v "$1" >/dev/null 2>&1; }
 function is_macos() { [[ "$(uname -s 2>/dev/null || true)" == "Darwin" ]]; }
 function die() { printf '%s\n' "$*" >&2; exit 1; }
@@ -68,6 +71,21 @@ function setup_brew_sync() {
   check_bat
 }
 
+function install_casks_to_applications() {
+  # Ensure brew is available in this shell
+  eval "$(/usr/bin/env brew shellenv)" 2>/dev/null || true
+
+  # Install only missing casks to /Applications; do not touch existing apps
+  for c in "${CASKS[@]}"; do
+    if ! brew list --cask "$c" >/dev/null 2>&1; then
+      echo "Installing cask: $c -> /Applications"
+      brew install --cask --appdir="/Applications" "$c"
+    else
+      echo "Cask already installed, skipping: $c"
+    fi
+  done
+}
+
 function setup_dotfiles() {
   has stow || brew install stow
   # Ensure SSH dir exists and has correct perms; prevents dir symlink folding
@@ -115,6 +133,7 @@ function main() {
   setup_git
   setup_brewfile
   setup_brew_sync
+  install_casks_to_applications
   setup_dotfiles
   setup_ssh
   setup_gitconfig

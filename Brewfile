@@ -11,7 +11,6 @@ brew "golangci-lint"
 brew "neovim"
 
 # Container Tools
-cask "docker-desktop"
 brew "docker-compose"
 
 # CLI Utilities
@@ -37,12 +36,6 @@ brew "wget"
 brew "wireguard-tools"
 brew "yarn"
 
-# Applications
-cask "google-chrome"
-cask "telegram"
-cask "visual-studio-code"
-cask "vlc"
-cask "whatsapp"
 
 # VSCode Extensions
 vscode "editorconfig.editorconfig"
@@ -69,6 +62,3 @@ go "github.com/golangci/golangci-lint/v2/cmd/golangci-lint"
 go "golang.org/x/lint/golint"
 go "golang.org/x/tools/gopls"
 go "honnef.co/go/tools/cmd/staticcheck"
-
-# Note: cargo-asm is a Rust tool that should be installed via cargo
-# After rustup is installed, run: cargo install cargo-asm
