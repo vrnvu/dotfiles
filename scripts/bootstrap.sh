@@ -56,9 +56,7 @@ function setup_git() {
 }
 
 function setup_brewfile() {
-  local dotfiles_dir brewfile_src
-  dotfiles_dir="$DEFAULT_DOTFILES_DIR"
-  brewfile_src="${dotfiles_dir}/Brewfile"
+  local brewfile_src; brewfile_src="${DEFAULT_DOTFILES_DIR}/Brewfile"
   [[ -f "$brewfile_src" ]] || die "Brewfile missing at $brewfile_src"
   ln -sf "$brewfile_src" "$DEFAULT_BREWFILE_LINK"
 }
@@ -89,8 +87,7 @@ function setup_dotfiles() {
 
 function setup_ssh() {
   # Generate key if missing; print pub for GitHub
-  local email
-  email="$(git config --global --get user.email || true)"
+  local email; email="$(git config --global --get user.email || true)"
   [[ -n "$email" ]] || die "error: git user.email is not set. Configure it in ~/.gitconfig before running bootstrap."
   if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
     umask 077
