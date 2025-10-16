@@ -1,6 +1,3 @@
-# Homebrew Services
-tap "homebrew/services"
-
 # Languages & Runtimes
 brew "go"
 brew "node"
@@ -19,7 +16,6 @@ brew "docker-compose"
 
 # CLI Utilities
 brew "bat"
-brew "choose"
 brew "cloc"
 brew "fd"
 brew "ffmpeg"
@@ -34,7 +30,7 @@ brew "nmap"
 brew "openvpn"
 brew "ripgrep"
 brew "sd"
-brew "tldr"
+brew "tealdeer"
 brew "tnftp"
 brew "uv"
 brew "wget"

@@ -57,3 +57,6 @@ to_bin_from_hex() {
 to_hex_from_bin() {
     echo "obase=16; ibase=2; $1" | bc
 }
+eval ""
+eval ""
+eval ""

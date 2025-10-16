@@ -46,5 +46,6 @@
 	lg = log --color --decorate --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an (%G?)>%Creset' --abbrev-commit
 [core]
 	ignorecase = false
+	excludesfile = /Users/arnau/.gitignore_global
 [push]
 	autoSetupRemote = true
