@@ -1,0 +1,79 @@
+{
+    "workbench.colorTheme": "Free Solo",
+    "editor.fontLigatures": true,
+    "editor.lineNumbers": "relative",
+    "editor.fontFamily": "Mon",
+    "editor.fontSize": 14,
+    "editor.formatOnSave": true,
+    "vim.statusBarColors.normal": "",
+    "vim.leader": " ",
+    "vim.useSystemClipboard": true,
+    "vim.camelCaseMotion.enable": true,
+    "vim.easymotion": true,
+    "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "leader",
+                "f",
+                "s"
+            ],
+            "commands": [
+                "workbench.action.files.save"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "f",
+                "m"
+            ],
+            "commands": [
+                "workbench.action.toggleZenMode"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "g",
+                "d"
+            ],
+            "commands": [
+                "editor.action.revealDefinitionAside"
+            ]
+        },
+        {
+            "before": [
+                "leader",
+                "n",
+                "e"
+            ],
+            "commands": [
+                "editor.action.marker.next"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "i"
+            ],
+            "commands": [
+                "editor.action.goToImplementation"
+            ]
+        }
+    ],
+    "redhat.telemetry.enabled": true,
+    "rust-analyzer.runnables.command": "flox activate && cargo",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "zenMode.hideLineNumbers": false,
+    "zig.zls.enabled": "on",
+    "jdk.telemetry.enabled": false,
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+}

@@ -1,0 +1,19 @@
+# OS cruft
+.DS_Store
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.un~
+
+# Logs & env
+*.log
+.env
+.env.*
+
+# Homebrew bundle lock (regenerated)
+Brewfile.lock.json
+
