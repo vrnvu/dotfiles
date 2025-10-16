@@ -10,14 +10,11 @@ readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 readonly DEFAULT_DOTFILES_DIR="$REPO_ROOT"
 readonly DEFAULT_BREWFILE_LINK="$HOME/.Brewfile"
 
-# Stow
-readonly -a STOW_PACKAGES_NORMAL=( zsh git vscode cursor )
-# ssh uses --no-folding to prevent stow from replacing ~/.ssh with a symlink.
-# This keeps ~/.ssh a real directory so private keys remain outside the repo.
-readonly -a STOW_PACKAGES_NOFOLD=( ssh )
-
-# Casks to install into /Applications
-readonly -a CASKS=( telegram vlc whatsapp cursor visual-studio-code spotify raycast cloudflare-warp ghostty intellij-idea-ce the-unarchiver transmission netnewswire chatgpt docker-desktop )
+# Stow helpers (KISS)
+function stow_zsh() { stow -Rv --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" zsh; }
+function stow_git() { stow -Rv --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" git; }
+# Keep ~/.ssh as a real directory; do not fold to a symlink
+function stow_ssh() { stow -Rv --no-folding --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" ssh; }
 
 function has() { command -v "$1" >/dev/null 2>&1; }
 function is_macos() { [[ "$(uname -s 2>/dev/null || true)" == "Darwin" ]]; }
@@ -51,6 +48,17 @@ function setup_brew() {
   brew --version >/dev/null
 }
 
+# Make sure VSCode CLI is available for Brewfile extensions
+function ensure_code_cli() {
+  command -v code >/dev/null 2>&1 && return 0
+  local app_bin="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+  local brew_bin
+  brew_bin="$(/usr/bin/env brew --prefix)/bin/code"
+  if [[ -x "$app_bin" ]]; then
+    ln -sf "$app_bin" "$brew_bin"
+  fi
+}
+
 function setup_git() {
   if ! has git; then
     brew install git
@@ -66,24 +74,12 @@ function setup_brewfile() {
 
 function setup_brew_sync() {
   brew update
-  HOMEBREW_NO_AUTO_UPDATE=1 brew bundle install --cleanup --file="$DEFAULT_BREWFILE_LINK"
+  ensure_code_cli
+  HOMEBREW_NO_AUTO_UPDATE=1 brew bundle install --cleanup --file="$DEFAULT_BREWFILE_LINK" || {
+    echo "warning: brew bundle install encountered errors; continuing"
+  }
   brew upgrade
   check_bat
-}
-
-function install_casks_to_applications() {
-  # Ensure brew is available in this shell
-  eval "$(/usr/bin/env brew shellenv)" 2>/dev/null || true
-
-  # Install only missing casks to /Applications; do not touch existing apps
-  for c in "${CASKS[@]}"; do
-    if ! brew list --cask "$c" >/dev/null 2>&1; then
-      echo "Installing cask: $c -> /Applications"
-      brew install --cask --appdir="/Applications" "$c"
-    else
-      echo "Cask already installed, skipping: $c"
-    fi
-  done
 }
 
 function setup_dotfiles() {
@@ -92,11 +88,9 @@ function setup_dotfiles() {
   mkdir -p "$HOME/.ssh"
   chmod 700 "$HOME/.ssh"
 
-  # Restow general packages
-  stow -Rv --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" "${STOW_PACKAGES_NORMAL[@]}"
-
-  # Stow ssh without directory folding so ~/.ssh remains a real directory
-  stow -Rv --no-folding --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" "${STOW_PACKAGES_NOFOLD[@]}"
+  stow_zsh
+  stow_git
+  stow_ssh
 
   [[ -f "$HOME/.zshrc" && -f "$HOME/.gitconfig" ]] || die "core dotfiles missing after stow"
   [[ -f "$HOME/.ssh/config" ]] && chmod 600 "$HOME/.ssh/config"
@@ -133,7 +127,6 @@ function main() {
   setup_git
   setup_brewfile
   setup_brew_sync
-  install_casks_to_applications
   setup_dotfiles
   setup_ssh
   setup_gitconfig

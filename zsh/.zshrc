@@ -1,6 +1,9 @@
 # add Zig
 export PATH=/Users/arnau/Documents/dev/zig:$PATH
 
+# add Code
+export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 

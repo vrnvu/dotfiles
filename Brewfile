@@ -39,21 +39,10 @@ brew "yarn"
 
 # VSCode Extensions
 vscode "editorconfig.editorconfig"
-vscode "github.vscode-github-actions"
 vscode "golang.go"
-vscode "mads-hartmann.bash-ide-vscode"
-vscode "mkhl.shfmt"
-vscode "ms-python.debugpy"
-vscode "ms-python.python"
-vscode "ms-python.vscode-pylance"
-vscode "ms-vscode.makefile-tools"
-vscode "rust-lang.rust-analyzer"
 vscode "ryanolsonx.distilled"
-vscode "tamasfe.even-better-toml"
-vscode "timonwong.shellcheck"
 vscode "usernamehw.errorlens"
 vscode "vscodevim.vim"
-vscode "ziglang.vscode-zig"
 
 # Go packages
 go "github.com/go-delve/delve/cmd/dlv"
