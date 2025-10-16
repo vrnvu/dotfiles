@@ -4,11 +4,13 @@ set -Eeuo pipefail
 IFS=$'\n\t'
 trap 'printf "error: %s\n" "bootstrap failed on: $BASH_COMMAND" >&2; exit 1' ERR
 
+# Dirs and files
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 readonly DEFAULT_DOTFILES_DIR="$REPO_ROOT"
 readonly DEFAULT_BREWFILE_LINK="$HOME/.Brewfile"
 
+# Stow
 readonly -a STOW_PACKAGES_NORMAL=( zsh git vscode cursor )
 # ssh uses --no-folding to prevent stow from replacing ~/.ssh with a symlink.
 # This keeps ~/.ssh a real directory so private keys remain outside the repo.
@@ -22,6 +24,10 @@ function require_cmd() { has "$1" || die "missing: $1"; }
 # Sanity check: verify a non-macOS tool from the Brewfile was installed.
 # We pick `bat` because macOS does not ship it by default.
 function check_bat() { command -v bat >/dev/null 2>&1 || { echo "expected bat missing after bundle"; exit 1; }; }
+function check_doctor() { brew doctor || true; }
+function check_brew_bundle() { brew bundle check --file="$DEFAULT_BREWFILE_LINK" || true; }
+function check_code() { command -v code >/dev/null 2>&1 && code --version >/dev/null || true; }
+function check_docker() { command -v docker >/dev/null 2>&1 && docker --version >/dev/null || true; }
 
 function setup_xcode() {
   if ! xcode-select -p >/dev/null 2>&1; then
@@ -102,11 +108,6 @@ function setup_gitconfig() {
   [[ -n "$email" ]] || die "error: git user.email is not set. Configure it in ~/.gitconfig before running bootstrap."
   git config --global core.excludesfile >/dev/null 2>&1 || git config --global core.excludesfile "$HOME/.gitignore_global"
 }
-
-function check_doctor() { brew doctor || true; }
-function check_brew_bundle() { brew bundle check --file="$DEFAULT_BREWFILE_LINK" || true; }
-function check_code() { command -v code >/dev/null 2>&1 && code --version >/dev/null || true; }
-function check_docker() { command -v docker >/dev/null 2>&1 && docker --version >/dev/null || true; }
 
 function main() {
   is_macos || die "macOS required"
