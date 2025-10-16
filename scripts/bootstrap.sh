@@ -40,11 +40,9 @@ function step2_homebrew() {
   if ! has brew; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
-  # shellenv for current shell + persist to .zshrc if not present
+  # shellenv for current shell only; do not write to ~/.zshrc
   local brew_prefix; brew_prefix="$(/usr/bin/env brew --prefix)"
   eval "$("${brew_prefix}/bin/brew" shellenv)"
-  grep -q 'brew shellenv' "$HOME/.zshrc" 2>/dev/null || \
-    echo "eval \"$(${brew_prefix}/bin/brew shellenv)\"" >> "$HOME/.zshrc"
   export HOMEBREW_NO_ENV_HINTS=1
   brew --version >/dev/null
 }
@@ -120,7 +118,6 @@ function step9_final_sanity() {
   command -v code >/dev/null 2>&1 && code --version >/dev/null || true
   command -v docker >/dev/null 2>&1 && docker --version >/dev/null || true
 }
-
 
 function main() {
   is_macos || { echo "macOS required"; exit 1; }
