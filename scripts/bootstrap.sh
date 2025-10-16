@@ -2,7 +2,7 @@
 
 set -Eeuo pipefail
 IFS=$'\n\t'
-trap 'echo "error: bootstrap failed"; exit 1' ERR
+trap 'printf "error: %s\n" "bootstrap failed on: $BASH_COMMAND" >&2; exit 1' ERR
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -16,7 +16,8 @@ readonly -a STOW_PACKAGES_NOFOLD=( ssh )
 
 function has() { command -v "$1" >/dev/null 2>&1; }
 function is_macos() { [[ "$(uname -s 2>/dev/null || true)" == "Darwin" ]]; }
-function require_cmd() { has "$1" || { echo "missing: $1"; exit 1; }; }
+function die() { printf '%s\n' "$*" >&2; exit 1; }
+function require_cmd() { has "$1" || die "missing: $1"; }
 
 # Sanity check: verify a non-macOS tool from the Brewfile was installed.
 # We pick `bat` because macOS does not ship it by default.
@@ -52,34 +53,30 @@ function setup_brewfile() {
   local dotfiles_dir brewfile_src
   dotfiles_dir="$DEFAULT_DOTFILES_DIR"
   brewfile_src="${dotfiles_dir}/Brewfile"
-  [[ -f "$brewfile_src" ]] || { echo "Brewfile missing at $brewfile_src"; exit 1; }
+  [[ -f "$brewfile_src" ]] || die "Brewfile missing at $brewfile_src"
   ln -sf "$brewfile_src" "$DEFAULT_BREWFILE_LINK"
 }
 
 function setup_brew_sync() {
   brew update
-  brew bundle install --cleanup --file="$DEFAULT_BREWFILE_LINK"
+  HOMEBREW_NO_AUTO_UPDATE=1 brew bundle install --cleanup --file="$DEFAULT_BREWFILE_LINK"
   brew upgrade
   check_bat
 }
 
 function setup_dotfiles() {
   has stow || brew install stow
-  local dotfiles_dir
-  dotfiles_dir="$DEFAULT_DOTFILES_DIR"
-  cd "$dotfiles_dir"
-
   # Ensure SSH dir exists and has correct perms; prevents dir symlink folding
   mkdir -p "$HOME/.ssh"
   chmod 700 "$HOME/.ssh"
 
   # Restow general packages
-  stow -Rv -t "$HOME" "${STOW_PACKAGES_NORMAL[@]}"
+  stow -Rv --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" "${STOW_PACKAGES_NORMAL[@]}"
 
   # Stow ssh without directory folding so ~/.ssh remains a real directory
-  stow -Rv -t "$HOME" --no-folding "${STOW_PACKAGES_NOFOLD[@]}"
+  stow -Rv --no-folding --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" "${STOW_PACKAGES_NOFOLD[@]}"
 
-  [[ -f "$HOME/.zshrc" && -f "$HOME/.gitconfig" ]] || { echo "core dotfiles missing after stow"; exit 1; }
+  [[ -f "$HOME/.zshrc" && -f "$HOME/.gitconfig" ]] || die "core dotfiles missing after stow"
   [[ -f "$HOME/.ssh/config" ]] && chmod 600 "$HOME/.ssh/config"
   zsh -lc 'true' || echo "warning: zsh returned non-zero; check .zshrc"
 }
@@ -88,7 +85,7 @@ function setup_ssh() {
   # Generate key if missing; print pub for GitHub
   local email
   email="$(git config --global --get user.email || true)"
-  [[ -n "$email" ]] || { echo "error: git user.email is not set. Configure it in ~/.gitconfig before running bootstrap."; exit 1; }
+  [[ -n "$email" ]] || die "error: git user.email is not set. Configure it in ~/.gitconfig before running bootstrap."
   if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
     umask 077
     ssh-keygen -t ed25519 -C "$email" -f "$HOME/.ssh/id_ed25519" -N ""
@@ -101,8 +98,8 @@ function setup_gitconfig() {
   local name email
   name="$(git config --global --get user.name || true)"
   email="$(git config --global --get user.email || true)"
-  [[ -n "$name" ]] || { echo "error: git user.name is not set. Configure it in ~/.gitconfig before running bootstrap."; exit 1; }
-  [[ -n "$email" ]] || { echo "error: git user.email is not set. Configure it in ~/.gitconfig before running bootstrap."; exit 1; }
+  [[ -n "$name" ]] || die "error: git user.name is not set. Configure it in ~/.gitconfig before running bootstrap."
+  [[ -n "$email" ]] || die "error: git user.email is not set. Configure it in ~/.gitconfig before running bootstrap."
   git config --global core.excludesfile >/dev/null 2>&1 || git config --global core.excludesfile "$HOME/.gitignore_global"
 }
 
@@ -112,8 +109,8 @@ function check_code() { command -v code >/dev/null 2>&1 && code --version >/dev/
 function check_docker() { command -v docker >/dev/null 2>&1 && docker --version >/dev/null || true; }
 
 function main() {
-  is_macos || { echo "macOS required"; exit 1; }
-  [[ -d "$DEFAULT_DOTFILES_DIR" ]] || { echo "missing dotfiles dir: $DEFAULT_DOTFILES_DIR"; exit 1; }
+  is_macos || die "macOS required"
+  [[ -d "$DEFAULT_DOTFILES_DIR" ]] || die "missing dotfiles dir: $DEFAULT_DOTFILES_DIR"
 
   setup_xcode
   setup_brew
