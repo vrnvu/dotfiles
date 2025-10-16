@@ -66,7 +66,8 @@ function step4_link_brewfile() {
 
 function step5_brew_bundle() {
   brew update
-  brew bundle install --cleanup --no-lock --file="$DEFAULT_BREWFILE_LINK"
+  brew bundle install --cleanup --file="$DEFAULT_BREWFILE_LINK"
+  brew upgrade
   has "$KNOWN_FORMULA_FOR_CHECK" || { echo "expected $KNOWN_FORMULA_FOR_CHECK missing after bundle"; exit 1; }
 }
 
