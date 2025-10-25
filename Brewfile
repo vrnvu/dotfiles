@@ -10,8 +10,12 @@ brew "gopls"
 brew "golangci-lint"
 brew "neovim"
 
+# Blog
+brew "hugo"
+
 # Container Tools
 brew "docker-compose"
+cask "docker"
 
 # CLI Utilities
 brew "bat"
