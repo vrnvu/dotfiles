@@ -12,6 +12,9 @@ ZSH_THEME="robbyrussell"
 plugins=(git fzf docker-compose)
 source $ZSH/oh-my-zsh.sh
 
+# set editor
+export EDITOR=vi
+
 
 # aliases and funcs
 alias bat="bat --style=plain"
