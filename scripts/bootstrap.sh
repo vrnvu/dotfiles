@@ -13,6 +13,7 @@ readonly DEFAULT_BREWFILE_LINK="$HOME/.Brewfile"
 # Stow helpers (KISS)
 function stow_zsh() { stow -Rv --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" zsh; }
 function stow_git() { stow -Rv --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" git; }
+function stow_jj() { stow -Rv --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME/.config/jj" jj; }
 # Keep ~/.ssh as a real directory; do not fold to a symlink
 function stow_ssh() { stow -Rv --no-folding --dir "$DEFAULT_DOTFILES_DIR" --target "$HOME" ssh; }
 
@@ -91,6 +92,8 @@ function setup_dotfiles() {
   stow_zsh
   stow_git
   stow_ssh
+  mkdir -p "$HOME/.config/jj"
+  stow_jj
 
   [[ -f "$HOME/.zshrc" && -f "$HOME/.gitconfig" ]] || die "core dotfiles missing after stow"
   [[ -f "$HOME/.ssh/config" ]] && chmod 600 "$HOME/.ssh/config"

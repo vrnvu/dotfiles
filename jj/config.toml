@@ -1,0 +1,10 @@
+[ui]
+paginate = "never"
+
+[user]
+name = "z"
+email = "z@local"
+username = "z"
+
+[aliases]
+tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
