@@ -17,6 +17,7 @@ export EDITOR=vi
 
 
 # aliases and funcs
+alias vi=nvim
 alias bat="bat --style=plain"
 alias dockerm='docker stop "$1" && docker rm "$1"'
 alias dev='cd ~/Documents/dev'
