@@ -17,6 +17,10 @@ brew "hugo"
 brew "docker-compose"
 cask "docker"
 
+# SVC
+brew "gh"
+brew "jj"
+
 # CLI Utilities
 brew "bat"
 brew "cloc"
@@ -27,7 +31,6 @@ brew "htop"
 brew "httpie"
 brew "hyperfine"
 brew "jq"
-brew "jj"
 brew "mkcert"
 brew "nmap"
 brew "openvpn"
