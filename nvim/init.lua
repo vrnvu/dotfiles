@@ -12,6 +12,15 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Configure lazy.nvim plugins
+require("lazy").setup({
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
+})
+
+-- ============================================================================
 -- Basic editor settings
 -- ============================================================================
 vim.g.mapleader = " "              -- Leader key
@@ -159,3 +168,17 @@ vim.keymap.set("n", "<leader>cx", function()
 end, { desc = "Clear quickfix list" })
 vim.keymap.set("n", "]Q", "<cmd>cnext<cr>", { desc = "Next quickfix item" })
 vim.keymap.set("n", "[Q", "<cmd>cprev<cr>", { desc = "Previous quickfix item" })
+
+-- Telescope keybindings
+vim.keymap.set("n", "<leader>ff", function()
+  require("telescope.builtin").find_files()
+end, { desc = "Find files" })
+vim.keymap.set("n", "<leader>fg", function()
+  require("telescope.builtin").live_grep()
+end, { desc = "Live grep" })
+vim.keymap.set("n", "<leader>fb", function()
+  require("telescope.builtin").buffers()
+end, { desc = "Find buffers" })
+vim.keymap.set("n", "<leader>fh", function()
+  require("telescope.builtin").help_tags()
+end, { desc = "Help tags" })
