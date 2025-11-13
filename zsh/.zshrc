@@ -13,7 +13,7 @@ plugins=(git fzf docker-compose)
 source $ZSH/oh-my-zsh.sh
 
 # set editor
-export EDITOR=vi
+export EDITOR=nvim
 
 
 # aliases and funcs
