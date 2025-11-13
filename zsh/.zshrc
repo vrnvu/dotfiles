@@ -21,7 +21,7 @@ alias vi=nvim
 alias bat="bat --style=plain"
 alias dockerm='docker stop "$1" && docker rm "$1"'
 alias dev='cd ~/Documents/dev'
-alias log='cd ~/Documents/dev/log'
+alias dotfiles='cd ~/dotfiles'
 alias home='cd ~'
 
 function brew-sync() {
