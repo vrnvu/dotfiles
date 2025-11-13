@@ -1,7 +1,7 @@
 ## Dotfiles 
 
 - Uses Homebrew, Brewfile, and GNU Stow.
-- Symlinks only `zsh`, `git`, and `ssh` into `$HOME`.
+- Symlinks only `zsh`, `git`, `jj`, `nvim` and `ssh` into `$HOME`.
 - Editor configs (VSCode/Cursor) are kept in `dotfiles/` but not stowed.
 
 ### Quick start
