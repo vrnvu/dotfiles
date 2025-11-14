@@ -41,6 +41,17 @@
                 "editor.action.revealDefinitionAside"
             ]
         },
+	{
+	    "before": [
+                "leader",
+                "g",
+                "o"
+            ],
+            "commands": [
+                "workbench.action.splitEditorLeft",
+                "git.openFile",
+            ]
+	},
         {
             "before": [
                 "leader",
