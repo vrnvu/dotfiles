@@ -9,3 +9,6 @@ username = "z"
 
 [aliases]
 tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
+
+[revset-aliases]
+'searchPR(x)' = 'fork_point(x-)..x ~ x'
