@@ -1,36 +1,41 @@
-# add Zig
-export PATH=/Users/arnau/Documents/dev/zig:$PATH
-
-# add Code
+# PATH
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/Users/arnau/Documents/dev/zig:$PATH"
 export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
 
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-
-# oh my zsh 
-ZSH_THEME="robbyrussell"
-plugins=(git fzf docker-compose)
-source $ZSH/oh-my-zsh.sh
-
-# set editor
+# Editor
 export EDITOR=nvim
-
-
-# aliases and funcs
 alias vi=nvim
+
+# fzf
+autoload -Uz compinit
+compinit
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Aliases
 alias bat="bat --style=plain"
 alias dockerm='docker stop "$1" && docker rm "$1"'
 alias dev='cd ~/Documents/dev'
 alias dotfiles='cd ~/dotfiles'
 alias home='cd ~'
+alias ..='cd ..'
+alias -- -='cd -'
 
-function brew-sync() {
+# Enable auto cd
+setopt AUTO_CD
+
+# Functions
+brew-sync() {
   brew update &&
   brew bundle install --cleanup --file=~/.Brewfile &&
   brew upgrade
 }
 
-# temporary folder
-function t {
-  pushd $(mktemp -d /tmp/$1.XXXX)
+t() {
+  pushd "$(mktemp -d /tmp/$1.XXXX)"
 }
+
+# Minimal prompt
+autoload -Uz colors && colors
+setopt prompt_subst
+PROMPT='%F{cyan}➜%f  %F{yellow}%1~%f %(?.%F{green}.%F{red})%#%f '
